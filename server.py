@@ -2,15 +2,13 @@
 This module is implementation of Multi threaded TCP Server.
 The Queue is used to share items between the threads.
 The class ServerThread extends Thread class that works with one client.
-oneGameList - list of one game players
 
+android client (socket+address)
 client_pool - queue - stock of resources for ServerThread threads
-one resource  - tuple '(new_client, one_game_list, j)' that consist of :
 new_client - tuple of client socket and client address, address - tuple of client ip and client port
 one_game_list - list of one game players couple
 j - id of client
 
-androids - android client (socket+address)
 IP - server IP, '' mean that will using every IP of current computer
 PORT_NUMBER - server port
 """
@@ -25,7 +23,6 @@ import sys
 
 androids = []
 IP = ''
-
 PORT_NUMBER = 12345
 
 # Create our Queue. The Queue is used to share items between the threads.
@@ -129,8 +126,16 @@ class ServerThread(threading.Thread):
 
 
 def kill_android():
-    if androids[0]:
-        androids[0] = None
+    """
+    kills the android at the first place
+    """
+    try:
+        if androids[0]:
+            androids[0] = None
+        if androids[1]:
+            androids[0] = androids[1]
+    except IndexError:
+        print "index error"
 
 
 def main():

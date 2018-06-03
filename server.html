@@ -10,11 +10,17 @@
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>server</strong></big></big></font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/tomer/PycharmProjects/project/myServer/server.py">/home/tomer/PycharmProjects/project/myServer/server.py</a></font></td></tr></table>
-    <p><tt>This&nbsp;module&nbsp;is&nbsp;implementation&nbsp;of&nbsp;Multi&nbsp;rghui&nbsp;kthpv&nbsp;tbh&nbsp;hfuk&nbsp;kjpathreaded&nbsp;TCP&nbsp;Server.<br>
+    <p><tt>This&nbsp;module&nbsp;is&nbsp;implementation&nbsp;of&nbsp;Multi&nbsp;threaded&nbsp;TCP&nbsp;Server.<br>
 The&nbsp;Queue&nbsp;is&nbsp;used&nbsp;to&nbsp;share&nbsp;items&nbsp;between&nbsp;the&nbsp;threads.<br>
 The&nbsp;class&nbsp;<a href="#ServerThread">ServerThread</a>&nbsp;extends&nbsp;<a href="threading.html#Thread">Thread</a>&nbsp;class&nbsp;that&nbsp;works&nbsp;with&nbsp;one&nbsp;client.<br>
-oneGameList&nbsp;-&nbsp;list&nbsp;of&nbsp;one&nbsp;game&nbsp;players<br>
-Client_poo[&nbsp;-&nbsp;list&nbsp;of&nbsp;all&nbsp;oneGameLists</tt></p>
+&nbsp;<br>
+client_pool&nbsp;-&nbsp;queue&nbsp;-&nbsp;stock&nbsp;of&nbsp;resources&nbsp;for&nbsp;<a href="#ServerThread">ServerThread</a>&nbsp;threads<br>
+new_client&nbsp;-&nbsp;tuple&nbsp;of&nbsp;client&nbsp;socket&nbsp;and&nbsp;client&nbsp;address,&nbsp;address&nbsp;-&nbsp;tuple&nbsp;of&nbsp;client&nbsp;ip&nbsp;and&nbsp;client&nbsp;port<br>
+one_game_list&nbsp;-&nbsp;list&nbsp;of&nbsp;one&nbsp;game&nbsp;players&nbsp;couple<br>
+j&nbsp;-&nbsp;id&nbsp;of&nbsp;client<br>
+&nbsp;<br>
+IP&nbsp;-&nbsp;server&nbsp;IP,&nbsp;''&nbsp;mean&nbsp;that&nbsp;will&nbsp;using&nbsp;every&nbsp;IP&nbsp;of&nbsp;current&nbsp;computer<br>
+PORT_NUMBER&nbsp;-&nbsp;server&nbsp;port</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -160,7 +166,8 @@ Data descriptors inherited from <a href="threading.html#_Verbose">threading._Ver
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>the&nbsp;function&nbsp;that&nbsp;runs&nbsp;the&nbsp;server</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-kill_android"><strong>kill_android</strong></a>()</dt></dl>
+ <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>the&nbsp;function&nbsp;that&nbsp;runs&nbsp;the&nbsp;server</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">
@@ -171,6 +178,5 @@ Data descriptors inherited from <a href="threading.html#_Verbose">threading._Ver
 <td width="100%"><strong>IP</strong> = ''<br>
 <strong>PORT_NUMBER</strong> = 12345<br>
 <strong>androids</strong> = []<br>
-<strong>client_pool</strong> = &lt;Queue.Queue instance&gt;<br>
-<strong>list_of_couples</strong> = []</td></tr></table>
+<strong>client_pool</strong> = &lt;Queue.Queue instance&gt;</td></tr></table>
 </body></html>
