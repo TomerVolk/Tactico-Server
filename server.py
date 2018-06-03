@@ -82,6 +82,7 @@ class ServerThread(threading.Thread):
                     print ("Server got:" + buf)
 
                     if buf == "bye":
+                        # ends the connection
                         print ("bye")
                         self.socket.sendall("bye\n")
 
