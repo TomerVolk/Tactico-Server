@@ -142,10 +142,6 @@ def main():
     """
     the function that runs the server
     """
-    time_t0 = time.time()
-    """
-    the time when the first android started
-    """
     # Start some threads:
     for x in range(4):
         ServerThread().start()  # ServerThread() - run constructor, start() - run run() method
@@ -167,11 +163,6 @@ def main():
 
         # become a server socket
         server.listen(5)
-
-        # the argument to listen  - (5) tells the socket library that we want it to queue up
-        # as many as 5 connect requests when the program is already busy.
-        # the 6th connection request shall be rejected.
-
         print "Server is listening"
 
         j = 0  # player index in couple
@@ -181,9 +172,6 @@ def main():
 
         # Have the server serve "forever":
         while True:
-            time_t1 = time.time()
-            if time_t1 - time_t0 > 1000:
-                androids[0] = None
             new_client = server.accept()  # Connected point. Server wait for client
             string = new_client[0].recv(1024)
             string = str(string).strip()
@@ -198,6 +186,7 @@ def main():
                 print "android"
                 if len(androids) > 0:
                     time_t0 = threading.Timer(600, kill_android())
+                    time_t0.start()
                     androids[0] = new_client
                 else:
                     androids.append(new_client)
