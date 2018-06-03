@@ -1,32 +1,41 @@
 """
-This module is implementation of Multi rghui kthpv tbh hfuk kjpathreaded TCP Server.
+This module is implementation of Multi threaded TCP Server.
 The Queue is used to share items between the threads.
 The class ServerThread extends Thread class that works with one client.
 oneGameList - list of one game players
-Client_poo[ - list of all oneGameLists
+
+client_pool - queue - stock of resources for ServerThread threads
+one resource  - tuple '(new_client, one_game_list, j)' that consist of :
+new_client - tuple of client socket and client address, address - tuple of client ip and client port
+one_game_list - list of one game players couple
+j - id of client
+
+androids - android client (socket+address)
+IP - server IP, '' mean that will using every IP of current computer
+PORT_NUMBER - server port
 """
-import Queue
 import socket
+import Queue
 import threading
-import sys
 import random
 import time
 import json
 import sys
+
+
 androids = []
+IP = ''
+
 PORT_NUMBER = 12345
-# List of players (couples)
-list_of_couples = []
+
 # Create our Queue. The Queue is used to share items between the threads.
 client_pool = Queue.Queue(0)
-IP = ''
 
 
 class ServerThread(threading.Thread):
     """
-     Extends Thread class that works with one client
-     """
-
+    Extends Thread class that works with one client
+    """
     def __init__(self):
         """
         overriding of constructor, initiates the relevant parameters
@@ -73,10 +82,10 @@ class ServerThread(threading.Thread):
                 while True:
                     buf = self.socket.recv(1024)
                     buf = buf.strip()
-                    print "Server got:" + buf
+                    print ("Server got:" + buf)
 
                     if buf == "bye":
-                        print "bye"
+                        print ("bye")
                         self.socket.sendall("bye\n")
 
                         break
@@ -84,7 +93,7 @@ class ServerThread(threading.Thread):
                         # The initial data from a java client
                         buf = str(buf)
                         buf = buf[8:]
-                        print buf
+                        print (buf)
                         for item in self.players:
                             if item.id != self.id:
                                 item.socket.sendall(str(buf) + "\n")
@@ -92,42 +101,48 @@ class ServerThread(threading.Thread):
                         # regular movement of the game
                         for item in self.players:
                             if item.id != self.id:
-                                print "server sent " + buf + "\n"
+                                print ("server sent " + buf + "\n")
                                 item.socket.sendall(buf+"\n")
                     else:
                         # if it is the last message of a turn, sends it to the android
                         if str(buf).startswith("turn"):
-                            print "turn"
+                            print ("turn")
                             buf = str(buf)
                             array = buf.split("##")
                             ob_list = []
                             d = {'p1': array[1], 'p2': array[2]}
                             ob_list.append(d)
                             j_str = json.dumps(ob_list)
-                            print str(len(androids)) + " spaces"
+                            print (str(len(androids)) + " spaces")
                             if len(androids) > 0:
-                                print "sending"
+                                print ("sending")
                                 try:
                                     androids[0][0].sendall(j_str+"\n")
-                                except Exception as e:
-                                    print "android is dead"
+                                except Exception:
+                                    print ("android is dead")
                         for item in self.players:
                             item.socket.sendall(buf+"\n")
 
                 self.socket.close()
-                print 'Closed connection from ip=', ip, "port=", port
+                print ('Closed connection from ip=', ip, "port=", port)
                 self.players.remove(self)
-                time.sleep(2)
-                if id == 0:
-                    list_of_couples.remove(self.players)
+
+
+def kill_android():
+    if androids[0]:
+        androids[0] = None
 
 
 def main():
     """
     the function that runs the server
     """
+    time_t0 = time.time()
+    """
+    the time when the first android started
+    """
     # Start some threads:
-    for x in xrange(4):
+    for x in range(4):
         ServerThread().start()  # ServerThread() - run constructor, start() - run run() method
 
     # Set up the server:
@@ -161,6 +176,9 @@ def main():
 
         # Have the server serve "forever":
         while True:
+            time_t1 = time.time()
+            if time_t1 - time_t0 > 1000:
+                androids[0] = None
             new_client = server.accept()  # Connected point. Server wait for client
             string = new_client[0].recv(1024)
             string = str(string).strip()
@@ -168,12 +186,13 @@ def main():
                 client_pool.put((new_client, one_game_list, j))  # add tuple to  clientPool
                 j = j + 1
                 if j == 2:  # last player in the current couple
-                    list_of_couples.append(one_game_list)
+                   
                     j = 0
                     one_game_list = []  # Create new list of one couple
             else:
                 print "android"
                 if len(androids) > 0:
+                    time_t0 = threading.Timer(600, kill_android())
                     androids[0] = new_client
                 else:
                     androids.append(new_client)
